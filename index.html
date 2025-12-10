@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Losowanie prezentów</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+
+    <div class="top-bar">
+      <div class="top-bar-inner">
+        <div class="lang-switcher" id="langSwitcher">
+          <button class="lang-btn active" data-lang="pl"><span class="flag">🇵🇱</span><span>PL</span></button>
+          <button class="lang-btn" data-lang="en"><span class="flag">🇬🇧</span><span>EN</span></button>
+          <button class="lang-btn" data-lang="de"><span class="flag">🇩🇪</span><span>DE</span></button>
+          <button class="lang-btn" data-lang="fr"><span class="flag">🇫🇷</span><span>FR</span></button>
+          <button class="lang-btn" data-lang="es"><span class="flag">🇪🇸</span><span>ES</span></button>
+          <button class="lang-btn" data-lang="it"><span class="flag">🇮🇹</span><span>IT</span></button>
+          <button class="lang-btn" data-lang="pt"><span class="flag">🇵🇹</span><span>PT</span></button>
+          <button class="lang-btn" data-lang="nl"><span class="flag">🇳🇱</span><span>NL</span></button>
+          <button class="lang-btn" data-lang="sv"><span class="flag">🇸🇪</span><span>SV</span></button>
+          <button class="lang-btn" data-lang="cs"><span class="flag">🇨🇿</span><span>CS</span></button>
+          <button class="lang-btn" data-lang="tr"><span class="flag">🇹🇷</span><span>TR</span></button>
+          <button class="lang-btn" data-lang="no"><span class="flag">🇳🇴</span><span>NO</span></button>
+          <button class="lang-btn" data-lang="da"><span class="flag">🇩🇰</span><span>DA</span></button>
+          <button class="lang-btn" data-lang="fi"><span class="flag">🇫🇮</span><span>FI</span></button>
+          <button class="lang-btn" data-lang="hu"><span class="flag">🇭🇺</span><span>HU</span></button>
+          <button class="lang-btn" data-lang="ro"><span class="flag">🇷🇴</span><span>RO</span></button>
+          <button class="lang-btn" data-lang="uk"><span class="flag">🇺🇦</span><span>UK</span></button>
+          <button class="lang-btn" data-lang="el"><span class="flag">🇬🇷</span><span>EL</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="cardRoot">
+      <div class="card-header">
+        <h1 data-i18n="appTitle">Losowanie prezentów</h1>
+        <p class="subtitle" data-i18n="subtitle">
+          Podaj liczbę osób, wpisz imiona i wylosuj, kto komu robi prezent.
+        </p>
+      </div>
+
+      <div class="step" id="step1">
+        <div class="step-label" data-i18n="step1Label">Krok 1</div>
+
+        <div class="field">
+          <label class="field-label" data-i18n="labelCount">Ile osób bierze udział?</label>
+
+          <div class="field-control">
+            <div class="count-row">
+              <div class="count-input-wrapper" role="group" aria-label="Liczba osób">
+                <button id="minusBtn" class="count-chip" type="button">−</button>
+                <span id="countDisplay" class="count-display">5</span>
+                <button id="plusBtn" class="count-chip" type="button">+</button>
+              </div>
+
+              <button id="createFieldsBtn" class="secondary" type="button" data-i18n="createFields">
+                Utwórz pola na imiona
+              </button>
+
+              <input type="hidden" id="countInput" value="5" />
+            </div>
+          </div>
+
+          <p class="hint" data-i18n="countHint">
+            Min. 2 osoby, max. 50. Imię: max. 30 znaków.
+          </p>
+        </div>
+
+        <!-- Pole: budżet -->
+        <div class="field budget-row">
+          <label class="field-label" for="budgetInput" data-i18n="budgetLabel">Maksymalny budżet na prezent</label>
+
+          <div class="field-control">
+            <div class="budget-inline">
+              <input
+                id="budgetInput"
+                class="budget-input"
+                type="text"
+                inputmode="decimal"
+                placeholder="200"
+                maxlength="12"
+              />
+              <span id="budgetCurrency" class="budget-currency">PLN</span>
+            </div>
+          </div>
+
+          <p class="hint" data-i18n="budgetHint">
+            Opcjonalnie. Wpisz kwotę, np. 200.
+          </p>
+        </div>
+
+        <div class="optional-row">
+          <div class="field">
+            <label class="field-label" for="optionalTitleInput" data-i18n="optionalTitleLabel">
+              Tytuł wiadomości (opcjonalnie)
+            </label>
+            <div class="field-control">
+              <input id="optionalTitleInput" type="text" maxlength="60" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="optionalMessageInput" data-i18n="optionalMessageLabel">
+              Wiadomość (opcjonalnie, do 300 znaków)
+            </label>
+            <div class="field-control">
+              <textarea
+                id="optionalMessageInput"
+                class="optional-textarea"
+                maxlength="300"
+                rows="5"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step" id="step2">
+        <div class="step-label" data-i18n="step2Label">Krok 2</div>
+
+        <div id="namesWrapper" class="names-wrapper"></div>
+
+        <div class="buttons">
+          <button id="drawBtn" class="primary" type="button" disabled data-i18n="drawButton">
+            Wylosuj prezenty
+          </button>
+
+          <button id="clearNamesBtn" class="secondary" type="button" disabled data-i18n="clearNames">
+            Wyczyść imiona
+          </button>
+        </div>
+
+        <p id="error" class="error" role="status"></p>
+      </div>
+
+      <div class="step" id="step3">
+        <div class="step-label" data-i18n="step3Label">Krok 3</div>
+        <div id="results" class="results"></div>
+      </div>
+
+      <div class="footer-credit">
+        <span class="created-by-text" data-i18n="createdBy">Created by Artur Polachowski</span>
+
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Theme toggle">
+          <span class="theme-icon" id="themeIcon">🌙</span>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <script src="i18n.js"></script>
+  <script src="easter-eggs.i18n.js"></script>
+  <script src="easter-eggs.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
